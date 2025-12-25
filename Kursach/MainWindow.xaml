@@ -123,6 +123,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <!-- Фамилия -->
@@ -161,17 +162,36 @@
                                      Width="120"
                                      Background="White"/>
 
+                            <!-- Телефон (новое поле) -->
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Телефон:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Grid.Row="2"
+                                     x:Name="EmployeePhone" 
+                                     Text="+7 (999) 000-00-00"
+                                     Margin="5,10,5,5" 
+                                     Width="120"
+                                     Background="White"/>
+
+                            <!-- Сертификат (новое поле) -->
+                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Сертификат:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3" Grid.Row="2"
+                                     x:Name="EmployeeCertificate" 
+                                     Text="CERT-00000000000000"
+                                     Margin="5,10,5,5" 
+                                     Width="120"
+                                     Background="White"/>
+
                             <!-- Оружие -->
-                            <CheckBox Grid.Column="0" Grid.Row="2"
+                            <CheckBox Grid.Column="0" Grid.Row="3"
                                       x:Name="EmployeeHasWeapon" 
                                       Content="Имеет оружие"
                                       IsChecked="True"
                                       Margin="5,10,5,5"
-                                      VerticalAlignment="Center"/>
+                                      VerticalAlignment="Center"
+                                      Grid.ColumnSpan="2"/>
 
                             <!-- Кнопки -->
                             <StackPanel Grid.Column="4" 
-                                        Grid.RowSpan="2"
+                                        Grid.RowSpan="3"
                                         Orientation="Horizontal" 
                                         VerticalAlignment="Center">
                                 <Button Content="Сохранить" 
@@ -334,8 +354,8 @@
                             <DataGridTextColumn Header="Дата" Binding="{Binding DutyDate, StringFormat='dd.MM.yyyy'}" Width="100"/>
                             <DataGridTextColumn Header="Начало" Binding="{Binding StartTime, StringFormat='hh\\:mm'}" Width="80"/>
                             <DataGridTextColumn Header="Конец" Binding="{Binding EndTime, StringFormat='hh\\:mm'}" Width="80"/>
-                            <DataGridTextColumn Header="Замена" Binding="{Binding ReplacementEmployee.FullName}" Width="150"/>
-                            <DataGridTextColumn Header="Причина замены" Binding="{Binding ReplacementReason}" Width="200"/>
+                            <DataGridTextColumn Header="Замена" Binding="{Binding ReplacementEmployee.FullName}" Width="200"/>
+                            <DataGridTextColumn Header="Причина замены" Binding="{Binding ReplacementReason}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -357,13 +377,12 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <!-- Выбор сотрудника -->
+                            <!-- Сотрудник -->
                             <TextBlock Grid.Column="0" Grid.Row="0" Text="Сотрудник:" Margin="5" VerticalAlignment="Center"/>
                             <ComboBox Grid.Column="1" Grid.Row="0"
-                                      x:Name="ScheduleEmployeeComboBox"
+                                      x:Name="ScheduleEmployeeComboBox" 
                                       DisplayMemberPath="FullName"
                                       Margin="5" 
                                       Width="200"/>
@@ -371,41 +390,41 @@
                             <!-- Дата -->
                             <TextBlock Grid.Column="2" Grid.Row="0" Text="Дата:" Margin="5" VerticalAlignment="Center"/>
                             <DatePicker Grid.Column="3" Grid.Row="0"
-                                        x:Name="ScheduleDatePicker"
+                                        x:Name="ScheduleDatePicker" 
                                         SelectedDate="{x:Static sys:DateTime.Today}"
                                         Margin="5" 
                                         Width="120"/>
 
                             <!-- Время начала -->
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Начало (чч:мм):" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Начало:" Margin="5,10,5,5" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="1" Grid.Row="1"
-                                     x:Name="ScheduleStartTime"
+                                     x:Name="ScheduleStartTime" 
                                      Text="08:00"
                                      Margin="5,10,5,5" 
-                                     Width="100"
+                                     Width="80"
                                      Background="White"/>
 
                             <!-- Время окончания -->
-                            <TextBlock Grid.Column="2" Grid.Row="1" Text="Конец (чч:мм):" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Grid.Row="1" Text="Конец:" Margin="5,10,5,5" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="3" Grid.Row="1"
-                                     x:Name="ScheduleEndTime"
+                                     x:Name="ScheduleEndTime" 
                                      Text="20:00"
                                      Margin="5,10,5,5" 
-                                     Width="100"
+                                     Width="80"
                                      Background="White"/>
 
-                            <!-- Заменяющий сотрудник -->
-                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Заменяющий:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <!-- Замена -->
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Замена:" Margin="5,10,5,5" VerticalAlignment="Center"/>
                             <ComboBox Grid.Column="1" Grid.Row="2"
-                                      x:Name="ScheduleReplacementEmployeeComboBox"
+                                      x:Name="ScheduleReplacementEmployeeComboBox" 
                                       DisplayMemberPath="FullName"
                                       Margin="5,10,5,5" 
                                       Width="200"/>
 
                             <!-- Причина замены -->
-                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Причина замены:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Причина:" Margin="5,10,5,5" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="3" Grid.Row="2"
-                                     x:Name="ScheduleReason"
+                                     x:Name="ScheduleReason" 
                                      Text=""
                                      Margin="5,10,5,5" 
                                      Width="200"
@@ -451,7 +470,7 @@
                             <DataGridTextColumn Header="Конец" Binding="{Binding EndTime, StringFormat='hh\\:mm'}" Width="80"/>
                             <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="200"/>
                             <DataGridTextColumn Header="Участники" Binding="{Binding ParticipantsCount}" Width="100"/>
-                            <DataGridTextColumn Header="Охранников" Binding="{Binding RequiredGuardsCount}" Width="100"/>
+                            <DataGridTextColumn Header="Охранники" Binding="{Binding RequiredGuardsCount}" Width="100"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -474,70 +493,68 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <!-- Название события -->
+                            <!-- Название -->
                             <TextBlock Grid.Column="0" Grid.Row="0" Text="Название:" Margin="5" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="1" Grid.Row="0"
-                                     x:Name="EventNameTextBox"
+                                     x:Name="EventNameTextBox" 
                                      Text="Корпоративное мероприятие"
                                      Margin="5" 
                                      Width="200"
                                      Background="White"/>
 
-                            <!-- Дата события -->
+                            <!-- Дата -->
                             <TextBlock Grid.Column="2" Grid.Row="0" Text="Дата:" Margin="5" VerticalAlignment="Center"/>
                             <DatePicker Grid.Column="3" Grid.Row="0"
-                                        x:Name="EventDatePicker"
+                                        x:Name="EventDatePicker" 
                                         SelectedDate="{x:Static sys:DateTime.Today}"
                                         Margin="5" 
                                         Width="120"/>
 
                             <!-- Время начала -->
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Начало (чч:мм):" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Начало:" Margin="5,10,5,5" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="1" Grid.Row="1"
-                                     x:Name="EventStartTime"
+                                     x:Name="EventStartTime" 
                                      Text="18:00"
                                      Margin="5,10,5,5" 
-                                     Width="100"
+                                     Width="80"
                                      Background="White"/>
 
                             <!-- Время окончания -->
-                            <TextBlock Grid.Column="2" Grid.Row="1" Text="Конец (чч:мм):" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Grid.Row="1" Text="Конец:" Margin="5,10,5,5" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="3" Grid.Row="1"
-                                     x:Name="EventEndTime"
+                                     x:Name="EventEndTime" 
                                      Text="23:00"
                                      Margin="5,10,5,5" 
-                                     Width="100"
+                                     Width="80"
                                      Background="White"/>
 
                             <!-- Адрес -->
                             <TextBlock Grid.Column="0" Grid.Row="2" Text="Адрес:" Margin="5,10,5,5" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="1" Grid.Row="2"
-                                     x:Name="EventAddress"
+                                     x:Name="EventAddress" 
                                      Text="Москва, ул. Тверская, 10"
                                      Margin="5,10,5,5" 
                                      Width="200"
-                                     Grid.ColumnSpan="3"
                                      Background="White"/>
 
-                            <!-- Количество участников -->
-                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Участников:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="3"
-                                     x:Name="EventParticipants"
+                            <!-- Участники -->
+                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Участники:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3" Grid.Row="2"
+                                     x:Name="EventParticipants" 
                                      Text="100"
                                      Margin="5,10,5,5" 
-                                     Width="100"
+                                     Width="80"
                                      Background="White"/>
 
-                            <!-- Количество охранников -->
-                            <TextBlock Grid.Column="2" Grid.Row="3" Text="Охранников:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="3"
-                                     x:Name="EventGuardsCount"
+                            <!-- Охранники -->
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Охранники:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Grid.Row="3"
+                                     x:Name="EventGuardsCount" 
                                      Text="2"
                                      Margin="5,10,5,5" 
-                                     Width="100"
+                                     Width="80"
                                      Background="White"/>
 
                             <!-- Кнопки -->
@@ -558,14 +575,13 @@
                     </Border>
                 </Grid>
             </TabItem>
-
         </TabControl>
 
         <!-- Статус бар -->
-        <Border Grid.Row="3" Background="#F5F5F5" Padding="10">
-            <TextBlock Text="{Binding StatusMessage}" 
-                       Foreground="#6c757d"
-                       HorizontalAlignment="Left"/>
-        </Border>
+        <StatusBar Grid.Row="3" Background="#F5F5F5" Padding="5">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

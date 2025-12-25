@@ -49,9 +49,11 @@ namespace SecurityCompanyWPF
         {
             if (string.IsNullOrWhiteSpace(EmployeeLastName.Text) ||
                 string.IsNullOrWhiteSpace(EmployeeFirstName.Text) ||
-                string.IsNullOrWhiteSpace(EmployeePosition.Text))
+                string.IsNullOrWhiteSpace(EmployeePosition.Text) ||
+                string.IsNullOrWhiteSpace(EmployeePhone.Text) ||
+                string.IsNullOrWhiteSpace(EmployeeCertificate.Text))
             {
-                MessageBox.Show("Заполните все обязательные поля", "Ошибка",
+                MessageBox.Show("Заполните все обязательные поля, включая телефон и сертификат", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -70,11 +72,11 @@ namespace SecurityCompanyWPF
                 Position = EmployeePosition.Text,
                 BaseSalary = salary,
                 HasWeapon = EmployeeHasWeapon.IsChecked ?? false,
-                CertificateNumber = $"CERT-{DateTime.Now:yyyyMMddHHmmss}",
-                LicenseNumber = $"LIC-{DateTime.Now:yyyyMMddHHmmss}",
+                CertificateNumber = EmployeeCertificate.Text,  // Теперь вручную
+                LicenseNumber = $"LIC-{DateTime.Now:yyyyMMddHHmmss}",  // Оставил автомат, можно изменить
                 INN = "000000000000",
                 PFRNumber = "000-000-000",
-                Phone = "+7 (999) 000-00-00"
+                Phone = EmployeePhone.Text  // Теперь вручную
             };
 
             _viewModel.AddEmployee(employee);
@@ -87,6 +89,8 @@ namespace SecurityCompanyWPF
             EmployeePosition.Text = "";
             EmployeeSalary.Text = "40000";
             EmployeeHasWeapon.IsChecked = true;
+            EmployeePhone.Text = "+7 (999) 000-00-00";
+            EmployeeCertificate.Text = "CERT-00000000000000";
         }
 
         private void CancelEmployeeButton_Click(object sender, RoutedEventArgs e)
@@ -99,6 +103,8 @@ namespace SecurityCompanyWPF
             EmployeePosition.Text = "";
             EmployeeSalary.Text = "40000";
             EmployeeHasWeapon.IsChecked = true;
+            EmployeePhone.Text = "+7 (999) 000-00-00";
+            EmployeeCertificate.Text = "CERT-00000000000000";
         }
 
         // ========== КЛИЕНТЫ ==========
