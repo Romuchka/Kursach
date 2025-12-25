@@ -25,6 +25,7 @@ namespace SecurityCompanyWPF
         {
             // Заполняем ComboBox сотрудников для расписания
             ScheduleEmployeeComboBox.ItemsSource = _viewModel.Employees;
+            ScheduleReplacementEmployeeComboBox.ItemsSource = _viewModel.Employees;
         }
 
         // ========== СОТРУДНИКИ ==========
@@ -135,8 +136,10 @@ namespace SecurityCompanyWPF
                 ClientType = clientType,
                 FullNameOfCompany = ClientName.Text,
                 Address = ClientAddress.Text,
-                Phone = "+7 (999) 000-00-00",
-                Email = "info@example.com"
+                ContactPerson = ClientContactPerson.Text,
+                PassportData = ClientPassportData.Text,
+                Phone = ClientPhone.Text,
+                Email = ClientEmail.Text
             };
 
             _viewModel.AddClient(client);
@@ -146,6 +149,10 @@ namespace SecurityCompanyWPF
             // Очищаем поля
             ClientName.Text = "";
             ClientAddress.Text = "";
+            ClientContactPerson.Text = "";
+            ClientPassportData.Text = "";
+            ClientPhone.Text = "";
+            ClientEmail.Text = "";
             ClientTypeComboBox.SelectedIndex = 0;
         }
 
@@ -156,6 +163,10 @@ namespace SecurityCompanyWPF
             // Очищаем поля
             ClientName.Text = "";
             ClientAddress.Text = "";
+            ClientContactPerson.Text = "";
+            ClientPassportData.Text = "";
+            ClientPhone.Text = "";
+            ClientEmail.Text = "";
             ClientTypeComboBox.SelectedIndex = 0;
         }
 
@@ -170,6 +181,7 @@ namespace SecurityCompanyWPF
 
             // Обновляем список сотрудников в ComboBox
             ScheduleEmployeeComboBox.ItemsSource = _viewModel.Employees;
+            ScheduleReplacementEmployeeComboBox.ItemsSource = _viewModel.Employees;
 
             // Показываем панель расписания
             AddSchedulePanel.Visibility = Visibility.Visible;
@@ -208,6 +220,7 @@ namespace SecurityCompanyWPF
                 DutyDate = ScheduleDatePicker.SelectedDate ?? DateTime.Today,
                 StartTime = startTime,
                 EndTime = endTime,
+                ReplacementEmployee = (Employee)ScheduleReplacementEmployeeComboBox.SelectedItem,
                 ReplacementReason = ScheduleReason.Text
             };
 
@@ -217,6 +230,7 @@ namespace SecurityCompanyWPF
 
             // Очищаем поля
             ScheduleEmployeeComboBox.SelectedIndex = -1;
+            ScheduleReplacementEmployeeComboBox.SelectedIndex = -1;
             ScheduleDatePicker.SelectedDate = DateTime.Today;
             ScheduleStartTime.Text = "08:00";
             ScheduleEndTime.Text = "20:00";
@@ -229,6 +243,7 @@ namespace SecurityCompanyWPF
 
             // Очищаем поля
             ScheduleEmployeeComboBox.SelectedIndex = -1;
+            ScheduleReplacementEmployeeComboBox.SelectedIndex = -1;
             ScheduleDatePicker.SelectedDate = DateTime.Today;
             ScheduleStartTime.Text = "08:00";
             ScheduleEndTime.Text = "20:00";
@@ -282,6 +297,13 @@ namespace SecurityCompanyWPF
                 return;
             }
 
+            if (!int.TryParse(EventGuardsCount.Text, out int guardsCount) || guardsCount < 0)
+            {
+                MessageBox.Show("Введите корректное количество охранников", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var newEvent = new Event
             {
                 EventName = EventNameTextBox.Text,
@@ -289,7 +311,8 @@ namespace SecurityCompanyWPF
                 StartTime = startTime,
                 EndTime = endTime,
                 Address = EventAddress.Text,
-                ParticipantsCount = participants
+                ParticipantsCount = participants,
+                RequiredGuardsCount = guardsCount
             };
 
             _viewModel.AddEvent(newEvent);
@@ -303,6 +326,7 @@ namespace SecurityCompanyWPF
             EventEndTime.Text = "23:00";
             EventAddress.Text = "Москва, ул. Тверская, 10";
             EventParticipants.Text = "100";
+            EventGuardsCount.Text = "2";
         }
 
         private void CancelEventButton_Click(object sender, RoutedEventArgs e)
@@ -316,6 +340,7 @@ namespace SecurityCompanyWPF
             EventEndTime.Text = "23:00";
             EventAddress.Text = "Москва, ул. Тверская, 10";
             EventParticipants.Text = "100";
+            EventGuardsCount.Text = "2";
         }
 
         // ========== ОБЩИЕ ФУНКЦИИ ==========

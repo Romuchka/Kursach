@@ -228,6 +228,8 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <!-- Тип клиента -->
@@ -260,9 +262,43 @@
                                      Grid.ColumnSpan="3"
                                      Background="White"/>
 
+                            <!-- Контактное лицо / Паспортные данные -->
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Контактное лицо:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Grid.Row="2"
+                                     x:Name="ClientContactPerson" 
+                                     Text=""
+                                     Margin="5,10,5,5" 
+                                     Width="200"
+                                     Background="White"/>
+
+                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Паспортные данные:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3" Grid.Row="2"
+                                     x:Name="ClientPassportData" 
+                                     Text=""
+                                     Margin="5,10,5,5" 
+                                     Width="200"
+                                     Background="White"/>
+
+                            <!-- Телефон и Email -->
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Телефон:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Grid.Row="3"
+                                     x:Name="ClientPhone" 
+                                     Text=""
+                                     Margin="5,10,5,5" 
+                                     Width="200"
+                                     Background="White"/>
+
+                            <TextBlock Grid.Column="2" Grid.Row="3" Text="Email:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3" Grid.Row="3"
+                                     x:Name="ClientEmail" 
+                                     Text=""
+                                     Margin="5,10,5,5" 
+                                     Width="200"
+                                     Background="White"/>
+
                             <!-- Кнопки -->
                             <StackPanel Grid.Column="4" 
-                                        Grid.RowSpan="2"
+                                        Grid.RowSpan="4"
                                         Orientation="Horizontal" 
                                         VerticalAlignment="Center">
                                 <Button Content="Сохранить" 
@@ -358,14 +394,21 @@
                                      Width="100"
                                      Background="White"/>
 
+                            <!-- Заменяющий сотрудник -->
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Заменяющий:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1" Grid.Row="2"
+                                      x:Name="ScheduleReplacementEmployeeComboBox"
+                                      DisplayMemberPath="FullName"
+                                      Margin="5,10,5,5" 
+                                      Width="200"/>
+
                             <!-- Причина замены -->
-                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Причина замены:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="2"
+                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Причина замены:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3" Grid.Row="2"
                                      x:Name="ScheduleReason"
                                      Text=""
                                      Margin="5,10,5,5" 
                                      Width="200"
-                                     Grid.ColumnSpan="3"
                                      Background="White"/>
 
                             <!-- Кнопки -->
@@ -407,8 +450,8 @@
                             <DataGridTextColumn Header="Начало" Binding="{Binding StartTime, StringFormat='hh\\:mm'}" Width="80"/>
                             <DataGridTextColumn Header="Конец" Binding="{Binding EndTime, StringFormat='hh\\:mm'}" Width="80"/>
                             <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="200"/>
-                            <DataGridTextColumn Header="Участников" Binding="{Binding ParticipantsCount}" Width="80"/>
-                            <DataGridTextColumn Header="Охранников" Binding="{Binding RequiredGuardsCount}" Width="80"/>
+                            <DataGridTextColumn Header="Участники" Binding="{Binding ParticipantsCount}" Width="100"/>
+                            <DataGridTextColumn Header="Охранников" Binding="{Binding RequiredGuardsCount}" Width="100"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -428,6 +471,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -487,6 +531,15 @@
                                      Width="100"
                                      Background="White"/>
 
+                            <!-- Количество охранников -->
+                            <TextBlock Grid.Column="2" Grid.Row="3" Text="Охранников:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3" Grid.Row="3"
+                                     x:Name="EventGuardsCount"
+                                     Text="2"
+                                     Margin="5,10,5,5" 
+                                     Width="100"
+                                     Background="White"/>
+
                             <!-- Кнопки -->
                             <StackPanel Grid.Column="4" 
                                         Grid.RowSpan="4"
@@ -508,12 +561,11 @@
 
         </TabControl>
 
-        <!-- Статусная строка -->
-        <Border Grid.Row="3" Background="#007ACC" Padding="10">
-            <TextBlock x:Name="StatusText" 
-                       Text="{Binding StatusMessage}" 
-                       Foreground="White"/>
+        <!-- Статус бар -->
+        <Border Grid.Row="3" Background="#F5F5F5" Padding="10">
+            <TextBlock Text="{Binding StatusMessage}" 
+                       Foreground="#6c757d"
+                       HorizontalAlignment="Left"/>
         </Border>
-
     </Grid>
 </Window>

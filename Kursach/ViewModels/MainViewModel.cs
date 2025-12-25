@@ -168,8 +168,6 @@ namespace SecurityCompanyWPF.ViewModels
         public void AddEvent(Event newEvent)
         {
             newEvent.Id = Events.Count > 0 ? Events.Max(ev => ev.Id) + 1 : 1;
-            // Автоматически рассчитываем необходимое количество охранников
-            newEvent.RequiredGuardsCount = newEvent.CalculateRequiredGuards();
             Events.Add(newEvent);
             StatusMessage = $"Добавлено событие: {newEvent.EventName} ({newEvent.RequiredGuardsCount} охранников)";
         }

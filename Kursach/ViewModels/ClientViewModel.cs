@@ -50,9 +50,36 @@ namespace SecurityCompanyWPF.ViewModels
             }
         }
 
-        public string ContactPerson { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
+        public string ContactPerson
+        {
+            get => _client.ContactPerson;
+            set
+            {
+                _client.ContactPerson = value;
+                OnPropertyChanged(nameof(ContactPerson));
+                OnPropertyChanged(nameof(DisplayName));
+            }
+        }
+
+        public string Phone
+        {
+            get => _client.Phone;
+            set
+            {
+                _client.Phone = value;
+                OnPropertyChanged(nameof(Phone));
+            }
+        }
+
+        public string Email
+        {
+            get => _client.Email;
+            set
+            {
+                _client.Email = value;
+                OnPropertyChanged(nameof(Email));
+            }
+        }
 
         public bool IsIndividual => ClientType == Models.ClientType.Individual;
         public bool IsLegalEntity => ClientType == Models.ClientType.LegalEntity;
