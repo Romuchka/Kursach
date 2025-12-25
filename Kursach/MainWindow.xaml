@@ -1,586 +1,523 @@
-﻿<Window x:Class="SecurityCompanyWPF.MainWindow"
+﻿<Window x:Class="Kursach.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Kursach"
+        xmlns:vm="clr-namespace:Kursach.ViewModels"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="Охранная компания - Управление" 
-        Height="850" 
-        Width="1200"
-        WindowStartupLocation="CenterScreen">
+        mc:Ignorable="d"
+        Title="Система учета сотрудников охранной фирмы" Height="600" Width="1000">
 
-    <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="Background" Value="#007ACC"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-        <Style TargetType="DataGrid">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="AutoGenerateColumns" Value="False"/>
-            <Setter Property="CanUserAddRows" Value="False"/>
-            <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="SelectionMode" Value="Single"/>
-        </Style>
-    </Window.Resources>
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Заголовок -->
-        <Border Grid.Row="0" Background="#007ACC" Padding="15">
-            <TextBlock Text="ОХРАННАЯ КОМПАНИЯ - СИСТЕМА УПРАВЛЕНИЯ" 
-                       FontSize="18" 
-                       FontWeight="Bold" 
-                       Foreground="White"
-                       HorizontalAlignment="Center"/>
+        <!-- Кнопки управления -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Button Content="Добавить сотрудника" 
+                    Click="AddEmployeeButton_Click"
+                    Background="#007bff"
+                    Margin="5"/>
+            <Button Content="Добавить клиента" 
+                    Click="AddClientButton_Click"
+                    Background="#007bff"
+                    Margin="5"/>
+            <Button Content="Добавить расписание" 
+                    Click="AddScheduleButton_Click"
+                    Background="#007bff"
+                    Margin="5"/>
+            <Button Content="Добавить событие" 
+                    Click="AddEventButton_Click"
+                    Background="#007bff"
+                    Margin="5"/>
+            <Button Content="Удалить выбранное" 
+                    Click="DeleteSelectedButton_Click"
+                    Background="#dc3545"
+                    Margin="5"/>
+            <Button Content="Сохранить изменения" 
+                    Click="SaveChangesButton_Click"
+                    Background="#28a745"
+                    Margin="5"/>
+        </StackPanel>
+
+        <!-- Панель добавления сотрудника -->
+        <Border Grid.Row="1" 
+                x:Name="AddEmployeePanel" 
+                Background="#E6F3FF" 
+                Padding="10" 
+                Margin="5"
+                Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Фамилия -->
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Фамилия:" Margin="5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="0"
+                         x:Name="EmployeeLastName" 
+                         Text="Иванов"
+                         Margin="5" 
+                         Width="120"
+                         Background="White"/>
+
+                <!-- Имя -->
+                <TextBlock Grid.Column="2" Grid.Row="0" Text="Имя:" Margin="5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="0"
+                         x:Name="EmployeeFirstName" 
+                         Text="Иван"
+                         Margin="5" 
+                         Width="120"
+                         Background="White"/>
+
+                <!-- Должность -->
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Должность:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="1"
+                         x:Name="EmployeePosition" 
+                         Text="Охранник"
+                         Margin="5,10,5,5" 
+                         Width="120"
+                         Background="White"/>
+
+                <!-- Зарплата -->
+                <TextBlock Grid.Column="2" Grid.Row="1" Text="Зарплата:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="1"
+                         x:Name="EmployeeSalary" 
+                         Text="40000"
+                         Margin="5,10,5,5" 
+                         Width="120"
+                         Background="White"/>
+
+                <!-- Телефон -->
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Телефон:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="2"
+                         x:Name="EmployeePhone" 
+                         Text="+7 (999) 000-00-00"
+                         Margin="5,10,5,5" 
+                         Width="120"
+                         Background="White"/>
+
+                <!-- Сертификат -->
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="Сертификат:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="2"
+                         x:Name="EmployeeCertificate" 
+                         Text="CERT-00000000000000"
+                         Margin="5,10,5,5" 
+                         Width="120"
+                         Background="White"/>
+
+                <!-- Оружие -->
+                <CheckBox Grid.Column="0" Grid.Row="3"
+                          x:Name="EmployeeHasWeapon" 
+                          Content="Имеет оружие"
+                          IsChecked="True"
+                          Margin="5,10,5,5"
+                          VerticalAlignment="Center"/>
+
+                <!-- Кнопки -->
+                <StackPanel Grid.Column="4" 
+                            Grid.RowSpan="4"
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center">
+                    <Button Content="Сохранить" 
+                            Click="SaveEmployeeButton_Click"
+                            Background="#28a745"
+                            Margin="5"/>
+                    <Button Content="Отмена" 
+                            Click="CancelEmployeeButton_Click"
+                            Background="#6c757d"
+                            Margin="5"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!-- Панель управления -->
-        <Border Grid.Row="1" Background="#F5F5F5" Padding="10">
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Добавить сотрудника" 
-                        Click="AddEmployeeButton_Click"
-                        Margin="5"/>
-                <Button Content="Добавить клиента" 
-                        Click="AddClientButton_Click"
-                        Margin="5"/>
-                <Button Content="Добавить расписание" 
-                        Click="AddScheduleButton_Click"
-                        Margin="5"/>
-                <Button Content="Добавить событие" 
-                        Click="AddEventButton_Click"
-                        Margin="5"/>
-                <TextBlock Text="Поиск:" 
-                           Margin="10,0,5,0"
-                           VerticalAlignment="Center"/>
-                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
-                         Width="150"
-                         Margin="5"/>
-                <Button Content="Сохранить все" 
-                        Click="SaveDataButton_Click"
-                        Margin="5"
-                        Background="#28a745"/>
-            </StackPanel>
+        <!-- Панель добавления клиента -->
+        <Border Grid.Row="1" 
+                x:Name="AddClientPanel" 
+                Background="#E6F3FF" 
+                Padding="10" 
+                Margin="5"
+                Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Тип клиента -->
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Тип:" Margin="5" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="1" Grid.Row="0"
+                          x:Name="ClientTypeComboBox" 
+                          SelectedIndex="0"
+                          Margin="5" 
+                          Width="150">
+                    <ComboBoxItem Content="Физическое лицо"/>
+                    <ComboBoxItem Content="Юридическое лицо"/>
+                </ComboBox>
+
+                <!-- Название/ФИО -->
+                <TextBlock Grid.Column="2" Grid.Row="0" Text="Название/ФИО:" Margin="5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="0"
+                         x:Name="ClientName" 
+                         Text="ООО Ромашка"
+                         Margin="5" 
+                         Width="200"
+                         Background="White"/>
+
+                <!-- Адрес -->
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Адрес:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="1"
+                         x:Name="ClientAddress" 
+                         Text="Москва, ул. Ленина, 1"
+                         Margin="5,10,5,5" 
+                         Width="200"
+                         Grid.ColumnSpan="3"
+                         Background="White"/>
+
+                <!-- Контактное лицо -->
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Контактное лицо:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="2"
+                         x:Name="ClientContactPerson" 
+                         Text=""
+                         Margin="5,10,5,5" 
+                         Width="200"
+                         Background="White"/>
+
+                <!-- Паспортные данные -->
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="Паспортные данные:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="2"
+                         x:Name="ClientPassportData" 
+                         Text=""
+                         Margin="5,10,5,5" 
+                         Width="200"
+                         Background="White"/>
+
+                <!-- Телефон -->
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="Телефон:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="3"
+                         x:Name="ClientPhone" 
+                         Text=""
+                         Margin="5,10,5,5" 
+                         Width="200"
+                         Background="White"/>
+
+                <!-- Email -->
+                <TextBlock Grid.Column="2" Grid.Row="3" Text="Email:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="3"
+                         x:Name="ClientEmail" 
+                         Text=""
+                         Margin="5,10,5,5" 
+                         Width="200"
+                         Background="White"/>
+
+                <!-- Кнопки -->
+                <StackPanel Grid.Column="4" 
+                            Grid.RowSpan="4"
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center">
+                    <Button Content="Сохранить" 
+                            Click="SaveClientButton_Click"
+                            Background="#28a745"
+                            Margin="5"/>
+                    <Button Content="Отмена" 
+                            Click="CancelClientButton_Click"
+                            Background="#6c757d"
+                            Margin="5"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!-- Основной контент -->
-        <TabControl Grid.Row="2" Margin="5">
+        <!-- Панель добавления расписания -->
+        <Border Grid.Row="1" 
+                x:Name="AddSchedulePanel" 
+                Background="#E6F3FF" 
+                Padding="10" 
+                Margin="5"
+                Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <!-- Вкладка сотрудников -->
-            <TabItem Header="СОТРУДНИКИ">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <!-- Сотрудник -->
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Сотрудник:" Margin="5" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="1" Grid.Row="0"
+                          x:Name="ScheduleEmployeeComboBox" 
+                          DisplayMemberPath="FullName"
+                          Margin="5" 
+                          Width="200"/>
 
-                    <!-- Таблица сотрудников -->
-                    <DataGrid Grid.Row="0" 
-                              ItemsSource="{Binding FilteredEmployees}" 
-                              SelectedItem="{Binding SelectedEmployee}"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                            <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}" Width="100"/>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" Width="100"/>
-                            <DataGridTextColumn Header="Должность" Binding="{Binding Position}" Width="120"/>
-                            <DataGridTextColumn Header="Зарплата" Binding="{Binding CalculateSalary, StringFormat='{}{0:C}'}" Width="100"/>
-                            <DataGridCheckBoxColumn Header="Оружие" Binding="{Binding HasWeapon}" Width="80"/>
-                            <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="120"/>
-                            <DataGridTextColumn Header="Сертификат" Binding="{Binding CertificateNumber}" Width="120"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                <!-- Дата -->
+                <TextBlock Grid.Column="2" Grid.Row="0" Text="Дата:" Margin="5" VerticalAlignment="Center"/>
+                <DatePicker Grid.Column="3" Grid.Row="0"
+                            x:Name="ScheduleDatePicker" 
+                            SelectedDate="{x:Static sys:DateTime.Today}"
+                            Margin="5" 
+                            Width="120"/>
 
-                    <!-- Панель добавления сотрудника -->
-                    <Border Grid.Row="1" 
-                            x:Name="AddEmployeePanel" 
-                            Background="#E6F3FF" 
-                            Padding="10" 
-                            Margin="5"
-                            Visibility="Collapsed">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                <!-- Время начала -->
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Начало:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="1"
+                         x:Name="ScheduleStartTime" 
+                         Text="08:00"
+                         Margin="5,10,5,5" 
+                         Width="80"
+                         Background="White"/>
 
-                            <!-- Фамилия -->
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Фамилия:" Margin="5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="0"
-                                     x:Name="EmployeeLastName" 
-                                     Text="Иванов"
-                                     Margin="5" 
-                                     Width="120"
-                                     Background="White"/>
+                <!-- Время окончания -->
+                <TextBlock Grid.Column="2" Grid.Row="1" Text="Конец:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="1"
+                         x:Name="ScheduleEndTime" 
+                         Text="20:00"
+                         Margin="5,10,5,5" 
+                         Width="80"
+                         Background="White"/>
 
-                            <!-- Имя -->
-                            <TextBlock Grid.Column="2" Grid.Row="0" Text="Имя:" Margin="5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="0"
-                                     x:Name="EmployeeFirstName" 
-                                     Text="Иван"
-                                     Margin="5" 
-                                     Width="120"
-                                     Background="White"/>
+                <!-- Замена -->
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Замена:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="1" Grid.Row="2"
+                          x:Name="ScheduleReplacementEmployeeComboBox" 
+                          DisplayMemberPath="FullName"
+                          Margin="5,10,5,5" 
+                          Width="200"/>
 
-                            <!-- Должность -->
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Должность:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="1"
-                                     x:Name="EmployeePosition" 
-                                     Text="Охранник"
-                                     Margin="5,10,5,5" 
-                                     Width="120"
-                                     Background="White"/>
+                <!-- Причина замены -->
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="Причина:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="2"
+                         x:Name="ScheduleReason" 
+                         Text=""
+                         Margin="5,10,5,5" 
+                         Width="200"
+                         Background="White"/>
 
-                            <!-- Зарплата -->
-                            <TextBlock Grid.Column="2" Grid.Row="1" Text="Зарплата:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="1"
-                                     x:Name="EmployeeSalary" 
-                                     Text="40000"
-                                     Margin="5,10,5,5" 
-                                     Width="120"
-                                     Background="White"/>
+                <!-- Кнопки -->
+                <StackPanel Grid.Column="4" 
+                            Grid.RowSpan="3"
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center">
+                    <Button Content="Сохранить" 
+                            Click="SaveScheduleButton_Click"
+                            Background="#28a745"
+                            Margin="5"/>
+                    <Button Content="Отмена" 
+                            Click="CancelScheduleButton_Click"
+                            Background="#6c757d"
+                            Margin="5"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-                            <!-- Телефон (новое поле) -->
-                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Телефон:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="2"
-                                     x:Name="EmployeePhone" 
-                                     Text="+7 (999) 000-00-00"
-                                     Margin="5,10,5,5" 
-                                     Width="120"
-                                     Background="White"/>
+        <!-- Панель добавления события -->
+        <Border Grid.Row="1" 
+                x:Name="AddEventPanel" 
+                Background="#E6F3FF" 
+                Padding="10" 
+                Margin="5"
+                Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                            <!-- Сертификат (новое поле) -->
-                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Сертификат:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="2"
-                                     x:Name="EmployeeCertificate" 
-                                     Text="CERT-00000000000000"
-                                     Margin="5,10,5,5" 
-                                     Width="120"
-                                     Background="White"/>
+                <!-- Название -->
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Название:" Margin="5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="0"
+                         x:Name="EventNameTextBox" 
+                         Text="Корпоративное мероприятие"
+                         Margin="5" 
+                         Width="200"
+                         Background="White"/>
 
-                            <!-- Оружие -->
-                            <CheckBox Grid.Column="0" Grid.Row="3"
-                                      x:Name="EmployeeHasWeapon" 
-                                      Content="Имеет оружие"
-                                      IsChecked="True"
-                                      Margin="5,10,5,5"
-                                      VerticalAlignment="Center"
-                                      Grid.ColumnSpan="2"/>
+                <!-- Дата -->
+                <TextBlock Grid.Column="2" Grid.Row="0" Text="Дата:" Margin="5" VerticalAlignment="Center"/>
+                <DatePicker Grid.Column="3" Grid.Row="0"
+                            x:Name="EventDatePicker" 
+                            SelectedDate="{x:Static sys:DateTime.Today}"
+                            Margin="5" 
+                            Width="120"/>
 
-                            <!-- Кнопки -->
-                            <StackPanel Grid.Column="4" 
-                                        Grid.RowSpan="3"
-                                        Orientation="Horizontal" 
-                                        VerticalAlignment="Center">
-                                <Button Content="Сохранить" 
-                                        Click="SaveEmployeeButton_Click"
-                                        Background="#28a745"
-                                        Margin="5"/>
-                                <Button Content="Отмена" 
-                                        Click="CancelEmployeeButton_Click"
-                                        Background="#6c757d"
-                                        Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </Grid>
+                <!-- Время начала -->
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Начало:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="1"
+                         x:Name="EventStartTime" 
+                         Text="18:00"
+                         Margin="5,10,5,5" 
+                         Width="80"
+                         Background="White"/>
+
+                <!-- Время окончания -->
+                <TextBlock Grid.Column="2" Grid.Row="1" Text="Конец:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="1"
+                         x:Name="EventEndTime" 
+                         Text="23:00"
+                         Margin="5,10,5,5" 
+                         Width="80"
+                         Background="White"/>
+
+                <!-- Адрес -->
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Адрес:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="2"
+                         x:Name="EventAddress" 
+                         Text="Москва, ул. Тверская, 10"
+                         Margin="5,10,5,5" 
+                         Width="200"
+                         Background="White"/>
+
+                <!-- Участники -->
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="Участники:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="3" Grid.Row="2"
+                         x:Name="EventParticipants" 
+                         Text="100"
+                         Margin="5,10,5,5" 
+                         Width="80"
+                         Background="White"/>
+
+                <!-- Охранники -->
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="Охранники:" Margin="5,10,5,5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Grid.Row="3"
+                         x:Name="EventGuardsCount" 
+                         Text="2"
+                         Margin="5,10,5,5" 
+                         Width="80"
+                         Background="White"/>
+
+                <!-- Кнопки -->
+                <StackPanel Grid.Column="4" 
+                            Grid.RowSpan="4"
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center">
+                    <Button Content="Сохранить" 
+                            Click="SaveEventButton_Click"
+                            Background="#28a745"
+                            Margin="5"/>
+                    <Button Content="Отмена" 
+                            Click="CancelEventButton_Click"
+                            Background="#6c757d"
+                            Margin="5"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Вкладки -->
+        <TabControl Grid.Row="1" x:Name="MainTabControl" Visibility="Visible">
+            <TabItem Header="Сотрудники">
+                <DataGrid ItemsSource="{Binding FilteredEmployees}"
+                          SelectedItem="{Binding SelectedEmployee}"
+                          AutoGenerateColumns="False"
+                          Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"/>
+                        <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"/>
+                        <DataGridTextColumn Header="Должность" Binding="{Binding Position}"/>
+                        <DataGridTextColumn Header="Зарплата" Binding="{Binding BaseSalary}"/>
+                        <DataGridCheckBoxColumn Header="Имеет оружие" Binding="{Binding HasWeapon}"/>
+                        <DataGridTextColumn Header="Сертификат" Binding="{Binding CertificateNumber}"/>
+                        <DataGridTextColumn Header="Лицензия" Binding="{Binding LicenseNumber}"/>
+                        <DataGridTextColumn Header="ИНН" Binding="{Binding INN}"/>
+                        <DataGridTextColumn Header="ПФР" Binding="{Binding PFRNumber}"/>
+                        <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
-
-            <!-- Вкладка клиентов -->
-            <TabItem Header="КЛИЕНТЫ">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Таблица клиентов -->
-                    <DataGrid Grid.Row="0" 
-                              ItemsSource="{Binding FilteredClients}" 
-                              SelectedItem="{Binding SelectedClient}"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Тип" Binding="{Binding ClientType}" Width="100"/>
-                            <DataGridTextColumn Header="Название/ФИО" Binding="{Binding DisplayName}" Width="200"/>
-                            <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="200"/>
-                            <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="120"/>
-                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="150"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <!-- Панель добавления клиента -->
-                    <Border Grid.Row="1" 
-                            x:Name="AddClientPanel" 
-                            Background="#E6F3FF" 
-                            Padding="10" 
-                            Margin="5"
-                            Visibility="Collapsed">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!-- Тип клиента -->
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Тип:" Margin="5" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1" Grid.Row="0"
-                                      x:Name="ClientTypeComboBox" 
-                                      SelectedIndex="0"
-                                      Margin="5" 
-                                      Width="150">
-                                <ComboBoxItem Content="Физическое лицо"/>
-                                <ComboBoxItem Content="Юридическое лицо"/>
-                            </ComboBox>
-
-                            <!-- Название/ФИО -->
-                            <TextBlock Grid.Column="2" Grid.Row="0" Text="Название/ФИО:" Margin="5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="0"
-                                     x:Name="ClientName" 
-                                     Text="ООО Ромашка"
-                                     Margin="5" 
-                                     Width="200"
-                                     Background="White"/>
-
-                            <!-- Адрес -->
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Адрес:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="1"
-                                     x:Name="ClientAddress" 
-                                     Text="Москва, ул. Ленина, 1"
-                                     Margin="5,10,5,5" 
-                                     Width="200"
-                                     Grid.ColumnSpan="3"
-                                     Background="White"/>
-
-                            <!-- Контактное лицо / Паспортные данные -->
-                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Контактное лицо:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="2"
-                                     x:Name="ClientContactPerson" 
-                                     Text=""
-                                     Margin="5,10,5,5" 
-                                     Width="200"
-                                     Background="White"/>
-
-                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Паспортные данные:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="2"
-                                     x:Name="ClientPassportData" 
-                                     Text=""
-                                     Margin="5,10,5,5" 
-                                     Width="200"
-                                     Background="White"/>
-
-                            <!-- Телефон и Email -->
-                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Телефон:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="3"
-                                     x:Name="ClientPhone" 
-                                     Text=""
-                                     Margin="5,10,5,5" 
-                                     Width="200"
-                                     Background="White"/>
-
-                            <TextBlock Grid.Column="2" Grid.Row="3" Text="Email:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="3"
-                                     x:Name="ClientEmail" 
-                                     Text=""
-                                     Margin="5,10,5,5" 
-                                     Width="200"
-                                     Background="White"/>
-
-                            <!-- Кнопки -->
-                            <StackPanel Grid.Column="4" 
-                                        Grid.RowSpan="4"
-                                        Orientation="Horizontal" 
-                                        VerticalAlignment="Center">
-                                <Button Content="Сохранить" 
-                                        Click="SaveClientButton_Click"
-                                        Background="#28a745"
-                                        Margin="5"/>
-                                <Button Content="Отмена" 
-                                        Click="CancelClientButton_Click"
-                                        Background="#6c757d"
-                                        Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </Grid>
+            <TabItem Header="Клиенты">
+                <DataGrid ItemsSource="{Binding FilteredClients}"
+                          SelectedItem="{Binding SelectedClient}"
+                          AutoGenerateColumns="False"
+                          Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Тип" Binding="{Binding ClientType}"/>
+                        <DataGridTextColumn Header="Название/ФИО" Binding="{Binding FullNameOfCompany}"/>
+                        <DataGridTextColumn Header="Адрес" Binding="{Binding Address}"/>
+                        <DataGridTextColumn Header="Контактное лицо" Binding="{Binding ContactPerson}"/>
+                        <DataGridTextColumn Header="Паспорт" Binding="{Binding PassportData}"/>
+                        <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}"/>
+                        <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
-
-            <!-- Вкладка расписания -->
-            <TabItem Header="РАСПИСАНИЕ">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Таблица расписания -->
-                    <DataGrid Grid.Row="0" 
-                              ItemsSource="{Binding DutySchedules}"
-                              SelectedItem="{Binding SelectedDutySchedule}"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                            <DataGridTextColumn Header="Сотрудник" Binding="{Binding Employee.FullName}" Width="200"/>
-                            <DataGridTextColumn Header="Дата" Binding="{Binding DutyDate, StringFormat='dd.MM.yyyy'}" Width="100"/>
-                            <DataGridTextColumn Header="Начало" Binding="{Binding StartTime, StringFormat='hh\\:mm'}" Width="80"/>
-                            <DataGridTextColumn Header="Конец" Binding="{Binding EndTime, StringFormat='hh\\:mm'}" Width="80"/>
-                            <DataGridTextColumn Header="Замена" Binding="{Binding ReplacementEmployee.FullName}" Width="200"/>
-                            <DataGridTextColumn Header="Причина замены" Binding="{Binding ReplacementReason}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <!-- Панель добавления расписания -->
-                    <Border Grid.Row="1" 
-                            x:Name="AddSchedulePanel" 
-                            Background="#E6F3FF" 
-                            Padding="10" 
-                            Margin="5"
-                            Visibility="Collapsed">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!-- Сотрудник -->
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Сотрудник:" Margin="5" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1" Grid.Row="0"
-                                      x:Name="ScheduleEmployeeComboBox" 
-                                      DisplayMemberPath="FullName"
-                                      Margin="5" 
-                                      Width="200"/>
-
-                            <!-- Дата -->
-                            <TextBlock Grid.Column="2" Grid.Row="0" Text="Дата:" Margin="5" VerticalAlignment="Center"/>
-                            <DatePicker Grid.Column="3" Grid.Row="0"
-                                        x:Name="ScheduleDatePicker" 
-                                        SelectedDate="{x:Static sys:DateTime.Today}"
-                                        Margin="5" 
-                                        Width="120"/>
-
-                            <!-- Время начала -->
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Начало:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="1"
-                                     x:Name="ScheduleStartTime" 
-                                     Text="08:00"
-                                     Margin="5,10,5,5" 
-                                     Width="80"
-                                     Background="White"/>
-
-                            <!-- Время окончания -->
-                            <TextBlock Grid.Column="2" Grid.Row="1" Text="Конец:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="1"
-                                     x:Name="ScheduleEndTime" 
-                                     Text="20:00"
-                                     Margin="5,10,5,5" 
-                                     Width="80"
-                                     Background="White"/>
-
-                            <!-- Замена -->
-                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Замена:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1" Grid.Row="2"
-                                      x:Name="ScheduleReplacementEmployeeComboBox" 
-                                      DisplayMemberPath="FullName"
-                                      Margin="5,10,5,5" 
-                                      Width="200"/>
-
-                            <!-- Причина замены -->
-                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Причина:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="2"
-                                     x:Name="ScheduleReason" 
-                                     Text=""
-                                     Margin="5,10,5,5" 
-                                     Width="200"
-                                     Background="White"/>
-
-                            <!-- Кнопки -->
-                            <StackPanel Grid.Column="4" 
-                                        Grid.RowSpan="3"
-                                        Orientation="Horizontal" 
-                                        VerticalAlignment="Center">
-                                <Button Content="Сохранить" 
-                                        Click="SaveScheduleButton_Click"
-                                        Background="#28a745"
-                                        Margin="5"/>
-                                <Button Content="Отмена" 
-                                        Click="CancelScheduleButton_Click"
-                                        Background="#6c757d"
-                                        Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </Grid>
+            <TabItem Header="Расписание">
+                <DataGrid ItemsSource="{Binding DutySchedules}"
+                          SelectedItem="{Binding SelectedDutySchedule}"
+                          AutoGenerateColumns="False"
+                          Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Сотрудник" Binding="{Binding Employee.FullName}"/>
+                        <DataGridTextColumn Header="Дата" Binding="{Binding DutyDate, StringFormat=dd.MM.yyyy}"/>
+                        <DataGridTextColumn Header="Начало" Binding="{Binding StartTime}"/>
+                        <DataGridTextColumn Header="Конец" Binding="{Binding EndTime}"/>
+                        <DataGridTextColumn Header="Замена" Binding="{Binding ReplacementEmployee.FullName}"/>
+                        <DataGridTextColumn Header="Причина" Binding="{Binding ReplacementReason}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
-
-            <!-- Вкладка событий -->
-            <TabItem Header="СОБЫТИЯ">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Таблица событий -->
-                    <DataGrid Grid.Row="0" 
-                              ItemsSource="{Binding Events}"
-                              SelectedItem="{Binding SelectedEvent}"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                            <DataGridTextColumn Header="Название" Binding="{Binding EventName}" Width="200"/>
-                            <DataGridTextColumn Header="Дата" Binding="{Binding EventDate, StringFormat='dd.MM.yyyy'}" Width="100"/>
-                            <DataGridTextColumn Header="Начало" Binding="{Binding StartTime, StringFormat='hh\\:mm'}" Width="80"/>
-                            <DataGridTextColumn Header="Конец" Binding="{Binding EndTime, StringFormat='hh\\:mm'}" Width="80"/>
-                            <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="200"/>
-                            <DataGridTextColumn Header="Участники" Binding="{Binding ParticipantsCount}" Width="100"/>
-                            <DataGridTextColumn Header="Охранники" Binding="{Binding RequiredGuardsCount}" Width="100"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <!-- Панель добавления события -->
-                    <Border Grid.Row="1" 
-                            x:Name="AddEventPanel" 
-                            Background="#E6F3FF" 
-                            Padding="10" 
-                            Margin="5"
-                            Visibility="Collapsed">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!-- Название -->
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Название:" Margin="5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="0"
-                                     x:Name="EventNameTextBox" 
-                                     Text="Корпоративное мероприятие"
-                                     Margin="5" 
-                                     Width="200"
-                                     Background="White"/>
-
-                            <!-- Дата -->
-                            <TextBlock Grid.Column="2" Grid.Row="0" Text="Дата:" Margin="5" VerticalAlignment="Center"/>
-                            <DatePicker Grid.Column="3" Grid.Row="0"
-                                        x:Name="EventDatePicker" 
-                                        SelectedDate="{x:Static sys:DateTime.Today}"
-                                        Margin="5" 
-                                        Width="120"/>
-
-                            <!-- Время начала -->
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Начало:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="1"
-                                     x:Name="EventStartTime" 
-                                     Text="18:00"
-                                     Margin="5,10,5,5" 
-                                     Width="80"
-                                     Background="White"/>
-
-                            <!-- Время окончания -->
-                            <TextBlock Grid.Column="2" Grid.Row="1" Text="Конец:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="1"
-                                     x:Name="EventEndTime" 
-                                     Text="23:00"
-                                     Margin="5,10,5,5" 
-                                     Width="80"
-                                     Background="White"/>
-
-                            <!-- Адрес -->
-                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Адрес:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="2"
-                                     x:Name="EventAddress" 
-                                     Text="Москва, ул. Тверская, 10"
-                                     Margin="5,10,5,5" 
-                                     Width="200"
-                                     Background="White"/>
-
-                            <!-- Участники -->
-                            <TextBlock Grid.Column="2" Grid.Row="2" Text="Участники:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="3" Grid.Row="2"
-                                     x:Name="EventParticipants" 
-                                     Text="100"
-                                     Margin="5,10,5,5" 
-                                     Width="80"
-                                     Background="White"/>
-
-                            <!-- Охранники -->
-                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Охранники:" Margin="5,10,5,5" VerticalAlignment="Center"/>
-                            <TextBox Grid.Column="1" Grid.Row="3"
-                                     x:Name="EventGuardsCount" 
-                                     Text="2"
-                                     Margin="5,10,5,5" 
-                                     Width="80"
-                                     Background="White"/>
-
-                            <!-- Кнопки -->
-                            <StackPanel Grid.Column="4" 
-                                        Grid.RowSpan="4"
-                                        Orientation="Horizontal" 
-                                        VerticalAlignment="Center">
-                                <Button Content="Сохранить" 
-                                        Click="SaveEventButton_Click"
-                                        Background="#28a745"
-                                        Margin="5"/>
-                                <Button Content="Отмена" 
-                                        Click="CancelEventButton_Click"
-                                        Background="#6c757d"
-                                        Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </Grid>
+            <TabItem Header="События">
+                <DataGrid ItemsSource="{Binding Events}"
+                          SelectedItem="{Binding SelectedEvent}"
+                          AutoGenerateColumns="False"
+                          Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Название" Binding="{Binding EventName}"/>
+                        <DataGridTextColumn Header="Дата" Binding="{Binding EventDate, StringFormat=dd.MM.yyyy}"/>
+                        <DataGridTextColumn Header="Начало" Binding="{Binding StartTime}"/>
+                        <DataGridTextColumn Header="Конец" Binding="{Binding EndTime}"/>
+                        <DataGridTextColumn Header="Адрес" Binding="{Binding Address}"/>
+                        <DataGridTextColumn Header="Участники" Binding="{Binding ParticipantsCount}"/>
+                        <DataGridTextColumn Header="Охранники" Binding="{Binding RequiredGuardsCount}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
         </TabControl>
 
-        <!-- Статус бар -->
-        <StatusBar Grid.Row="3" Background="#F5F5F5" Padding="5">
+        <!-- Статус -->
+        <StatusBar Grid.Row="2" Background="#F8F9FA">
             <StatusBarItem>
-                <TextBlock Text="{Binding StatusMessage}"/>
+                <TextBlock x:Name="StatusText" Text="Готово"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

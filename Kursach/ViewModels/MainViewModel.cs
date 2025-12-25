@@ -1,181 +1,147 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Input;
+﻿using Kursach;  // Для моделей
+using Newtonsoft.Json;
 using SecurityCompanyWPF.Models;
-using SecurityCompanyWPF.Services;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
-namespace SecurityCompanyWPF.ViewModels
+namespace Kursach.ViewModels
 {
-    public class MainViewModel : ObservableObject
+    public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly DataStorage _dataStorage;
+        public ObservableCollection<Employee> Employees { get; set; } = new ObservableCollection<Employee>();
+        public ObservableCollection<Client> Clients { get; set; } = new ObservableCollection<Client>();
+        public ObservableCollection<DutySchedule> DutySchedules { get; set; } = new ObservableCollection<DutySchedule>();
+        public ObservableCollection<Event> Events { get; set; } = new ObservableCollection<Event>();
 
-        private string _searchText;
+        private string _searchText = "";
         public string SearchText
         {
             get => _searchText;
             set
             {
                 _searchText = value;
-                FilterData();
-                OnPropertyChanged(nameof(SearchText));
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(FilteredEmployees));
+                OnPropertyChanged(nameof(FilteredClients));
             }
         }
 
-        public ObservableCollection<Employee> Employees { get; set; }
-        public ObservableCollection<Employee> FilteredEmployees { get; set; }
+        public ObservableCollection<Employee> FilteredEmployees
+        {
+            get
+            {
+                string searchLower = SearchText.ToLower();
+                return new ObservableCollection<Employee>(
+                    Employees.Where(e => string.IsNullOrEmpty(SearchText) || e.LastName.ToLower().Contains(searchLower) || e.FirstName.ToLower().Contains(searchLower)));
+            }
+        }
 
-        public ObservableCollection<Client> Clients { get; set; }
-        public ObservableCollection<Client> FilteredClients { get; set; }
-
-        public ObservableCollection<DutySchedule> DutySchedules { get; set; }
-        public ObservableCollection<Event> Events { get; set; }
+        public ObservableCollection<Client> FilteredClients
+        {
+            get
+            {
+                string searchLower = SearchText.ToLower();
+                return new ObservableCollection<Client>(
+                    Clients.Where(c => string.IsNullOrEmpty(SearchText) || c.FullNameOfCompany.ToLower().Contains(searchLower)));
+            }
+        }
 
         private Employee _selectedEmployee;
-        public Employee SelectedEmployee
-        {
-            get => _selectedEmployee;
-            set
-            {
-                _selectedEmployee = value;
-                OnPropertyChanged(nameof(SelectedEmployee));
-            }
-        }
+        public Employee SelectedEmployee { get => _selectedEmployee; set { _selectedEmployee = value; OnPropertyChanged(); } }
 
         private Client _selectedClient;
-        public Client SelectedClient
-        {
-            get => _selectedClient;
-            set
-            {
-                _selectedClient = value;
-                OnPropertyChanged(nameof(SelectedClient));
-            }
-        }
+        public Client SelectedClient { get => _selectedClient; set { _selectedClient = value; OnPropertyChanged(); } }
 
         private DutySchedule _selectedDutySchedule;
-        public DutySchedule SelectedDutySchedule
-        {
-            get => _selectedDutySchedule;
-            set
-            {
-                _selectedDutySchedule = value;
-                OnPropertyChanged(nameof(SelectedDutySchedule));
-            }
-        }
+        public DutySchedule SelectedDutySchedule { get => _selectedDutySchedule; set { _selectedDutySchedule = value; OnPropertyChanged(); } }
 
         private Event _selectedEvent;
-        public Event SelectedEvent
+        public Event SelectedEvent { get => _selectedEvent; set { _selectedEvent = value; OnPropertyChanged(); } }
+
+        public void AddEmployee(Employee employee)
         {
-            get => _selectedEvent;
-            set
-            {
-                _selectedEvent = value;
-                OnPropertyChanged(nameof(SelectedEvent));
-            }
+            Employees.Add(employee);
+            OnPropertyChanged(nameof(FilteredEmployees));
         }
 
-        private string _statusMessage = "Система готова к работе";
-        public string StatusMessage
+        public void RemoveEmployee(Employee employee)
         {
-            get => _statusMessage;
-            set
+            Employees.Remove(employee);
+            OnPropertyChanged(nameof(FilteredEmployees));
+        }
+
+        public void AddClient(Client client)
+        {
+            Clients.Add(client);
+            OnPropertyChanged(nameof(FilteredClients));
+        }
+
+        public void RemoveClient(Client client)
+        {
+            Clients.Remove(client);
+            OnPropertyChanged(nameof(FilteredClients));
+        }
+
+        public void AddDutySchedule(DutySchedule schedule)
+        {
+            DutySchedules.Add(schedule);
+            OnPropertyChanged(nameof(DutySchedules));
+        }
+
+        public void RemoveDutySchedule(DutySchedule schedule)
+        {
+            DutySchedules.Remove(schedule);
+            OnPropertyChanged(nameof(DutySchedules));
+        }
+
+        public void AddEvent(Event ev)
+        {
+            Events.Add(ev);
+            OnPropertyChanged(nameof(Events));
+        }
+
+        public void RemoveEvent(Event ev)
+        {
+            Events.Remove(ev);
+            OnPropertyChanged(nameof(Events));
+        }
+
+        public void SaveData()
+        {
+            try
             {
-                _statusMessage = value;
-                OnPropertyChanged(nameof(StatusMessage));
+                File.WriteAllText("employees.json", JsonConvert.SerializeObject(Employees));
+                File.WriteAllText("clients.json", JsonConvert.SerializeObject(Clients));
+                File.WriteAllText("schedules.json", JsonConvert.SerializeObject(DutySchedules));
+                File.WriteAllText("events.json", JsonConvert.SerializeObject(Events));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка");
             }
         }
 
         public MainViewModel()
         {
-            _dataStorage = new DataStorage();
-            _dataStorage.LoadData();
-
-            var data = _dataStorage.GetData();
-
-            Employees = new ObservableCollection<Employee>(data.Employees);
-            Clients = new ObservableCollection<Client>(data.Clients);
-            DutySchedules = new ObservableCollection<DutySchedule>(data.DutySchedules);
-            Events = new ObservableCollection<Event>(data.Events);
-
-            FilteredEmployees = new ObservableCollection<Employee>(Employees);
-            FilteredClients = new ObservableCollection<Client>(Clients);
-
-            StatusMessage = $"Загружено {Employees.Count} сотрудников, {Clients.Count} клиентов, " +
-                          $"{DutySchedules.Count} расписаний, {Events.Count} событий";
+            if (File.Exists("employees.json"))
+                Employees = JsonConvert.DeserializeObject<ObservableCollection<Employee>>(File.ReadAllText("employees.json")) ?? new ObservableCollection<Employee>();
+            if (File.Exists("clients.json"))
+                Clients = JsonConvert.DeserializeObject<ObservableCollection<Client>>(File.ReadAllText("clients.json")) ?? new ObservableCollection<Client>();
+            if (File.Exists("schedules.json"))
+                DutySchedules = JsonConvert.DeserializeObject<ObservableCollection<DutySchedule>>(File.ReadAllText("schedules.json")) ?? new ObservableCollection<DutySchedule>();
+            if (File.Exists("events.json"))
+                Events = JsonConvert.DeserializeObject<ObservableCollection<Event>>(File.ReadAllText("events.json")) ?? new ObservableCollection<Event>();
         }
 
-        private void FilterData()
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-            {
-                FilteredEmployees.Clear();
-                foreach (var emp in Employees)
-                    FilteredEmployees.Add(emp);
-
-                FilteredClients.Clear();
-                foreach (var cli in Clients)
-                    FilteredClients.Add(cli);
-            }
-            else
-            {
-                var search = SearchText.ToLower();
-
-                FilteredEmployees.Clear();
-                foreach (var emp in Employees.Where(e =>
-                    e.FullName.ToLower().Contains(search) ||
-                    e.Position.ToLower().Contains(search) ||
-                    e.CertificateNumber.ToLower().Contains(search)))
-                {
-                    FilteredEmployees.Add(emp);
-                }
-
-                FilteredClients.Clear();
-                foreach (var cli in Clients.Where(c =>
-                    c.DisplayName.ToLower().Contains(search) ||
-                    c.Address.ToLower().Contains(search) ||
-                    (c.Phone ?? "").Contains(search)))
-                {
-                    FilteredClients.Add(cli);
-                }
-            }
-        }
-
-        public void AddEmployee(Employee employee)
-        {
-            employee.Id = Employees.Count > 0 ? Employees.Max(e => e.Id) + 1 : 1;
-            Employees.Add(employee);
-            FilterData();
-            StatusMessage = $"Добавлен сотрудник: {employee.FullName} с зарплатой {employee.CalculateSalary():C}";
-        }
-
-        public void AddClient(Client client)
-        {
-            client.Id = Clients.Count > 0 ? Clients.Max(c => c.Id) + 1 : 1;
-            Clients.Add(client);
-            FilterData();
-            StatusMessage = $"Добавлен клиент: {client.DisplayName}";
-        }
-
-        public void AddDutySchedule(DutySchedule schedule)
-        {
-            schedule.Id = DutySchedules.Count > 0 ? DutySchedules.Max(d => d.Id) + 1 : 1;
-            DutySchedules.Add(schedule);
-            StatusMessage = $"Добавлено расписание для {schedule.Employee.FullName} на {schedule.DutyDate:dd.MM.yyyy}";
-        }
-
-        public void AddEvent(Event newEvent)
-        {
-            newEvent.Id = Events.Count > 0 ? Events.Max(ev => ev.Id) + 1 : 1;
-            Events.Add(newEvent);
-            StatusMessage = $"Добавлено событие: {newEvent.EventName} ({newEvent.RequiredGuardsCount} охранников)";
-        }
-
-        public void SaveData()
-        {
-            _dataStorage.SaveData();
-            StatusMessage = "Все данные сохранены";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

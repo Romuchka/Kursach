@@ -1,48 +1,36 @@
-﻿using System;
-using System.Windows;
-using SecurityCompanyWPF.ViewModels;
+﻿using Kursach;
+using Kursach.ViewModels;
 using SecurityCompanyWPF.Models;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System;
+using System.Windows;
+using System.Windows.Controls;
 
-namespace SecurityCompanyWPF
+namespace Kursach
 {
     public partial class MainWindow : Window
     {
-        private MainViewModel _viewModel;
+        private readonly MainViewModel _viewModel;
 
         public MainWindow()
         {
             InitializeComponent();
-            _viewModel = new MainViewModel();
-            DataContext = _viewModel;
+            _viewModel = (MainViewModel)DataContext;
 
-            // Заполняем ComboBox сотрудников для расписания
-            Loaded += MainWindow_Loaded;
+            // Заполнение ComboBox для расписания
+            Loaded += (s, e) =>
+            {
+                ScheduleEmployeeComboBox.ItemsSource = _viewModel.Employees;
+                ScheduleReplacementEmployeeComboBox.ItemsSource = _viewModel.Employees;
+            };
         }
-
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Заполняем ComboBox сотрудников для расписания
-            ScheduleEmployeeComboBox.ItemsSource = _viewModel.Employees;
-            ScheduleReplacementEmployeeComboBox.ItemsSource = _viewModel.Employees;
-        }
-
-        // ========== СОТРУДНИКИ ==========
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            // Скрываем другие панели
+            AddEmployeePanel.Visibility = Visibility.Visible;
             AddClientPanel.Visibility = Visibility.Collapsed;
             AddSchedulePanel.Visibility = Visibility.Collapsed;
             AddEventPanel.Visibility = Visibility.Collapsed;
-
-            // Показываем панель сотрудника
-            AddEmployeePanel.Visibility = Visibility.Visible;
-
-            // Устанавливаем фокус
-            EmployeeLastName.Focus();
-            EmployeeLastName.SelectAll();
+            MainTabControl.Visibility = Visibility.Collapsed;
         }
 
         private void SaveEmployeeButton_Click(object sender, RoutedEventArgs e)
@@ -72,56 +60,50 @@ namespace SecurityCompanyWPF
                 Position = EmployeePosition.Text,
                 BaseSalary = salary,
                 HasWeapon = EmployeeHasWeapon.IsChecked ?? false,
-                CertificateNumber = EmployeeCertificate.Text,  // Теперь вручную
-                LicenseNumber = $"LIC-{DateTime.Now:yyyyMMddHHmmss}",  // Оставил автомат, можно изменить
+                CertificateNumber = EmployeeCertificate.Text,
+                LicenseNumber = $"LIC-{DateTime.Now:yyyyMMddHHmmss}",
                 INN = "000000000000",
                 PFRNumber = "000-000-000",
-                Phone = EmployeePhone.Text  // Теперь вручную
+                Phone = EmployeePhone.Text
             };
 
             _viewModel.AddEmployee(employee);
 
             AddEmployeePanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Visible;
 
-            // Очищаем поля
-            EmployeeLastName.Text = "";
-            EmployeeFirstName.Text = "";
-            EmployeePosition.Text = "";
+            EmployeeLastName.Text = "Иванов";
+            EmployeeFirstName.Text = "Иван";
+            EmployeePosition.Text = "Охранник";
             EmployeeSalary.Text = "40000";
             EmployeeHasWeapon.IsChecked = true;
             EmployeePhone.Text = "+7 (999) 000-00-00";
             EmployeeCertificate.Text = "CERT-00000000000000";
+
+            StatusText.Text = "Сотрудник добавлен";
         }
 
         private void CancelEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
             AddEmployeePanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Visible;
 
-            // Очищаем поля
-            EmployeeLastName.Text = "";
-            EmployeeFirstName.Text = "";
-            EmployeePosition.Text = "";
+            EmployeeLastName.Text = "Иванов";
+            EmployeeFirstName.Text = "Иван";
+            EmployeePosition.Text = "Охранник";
             EmployeeSalary.Text = "40000";
             EmployeeHasWeapon.IsChecked = true;
             EmployeePhone.Text = "+7 (999) 000-00-00";
             EmployeeCertificate.Text = "CERT-00000000000000";
         }
 
-        // ========== КЛИЕНТЫ ==========
-
         private void AddClientButton_Click(object sender, RoutedEventArgs e)
         {
-            // Скрываем другие панели
+            AddClientPanel.Visibility = Visibility.Visible;
             AddEmployeePanel.Visibility = Visibility.Collapsed;
             AddSchedulePanel.Visibility = Visibility.Collapsed;
             AddEventPanel.Visibility = Visibility.Collapsed;
-
-            // Показываем панель клиента
-            AddClientPanel.Visibility = Visibility.Visible;
-
-            // Устанавливаем фокус
-            ClientName.Focus();
-            ClientName.SelectAll();
+            MainTabControl.Visibility = Visibility.Collapsed;
         }
 
         private void SaveClientButton_Click(object sender, RoutedEventArgs e)
@@ -134,8 +116,7 @@ namespace SecurityCompanyWPF
                 return;
             }
 
-            var clientType = ClientTypeComboBox.SelectedIndex == 0 ?
-                ClientType.Individual : ClientType.LegalEntity;
+            var clientType = ClientTypeComboBox.SelectedIndex == 0 ? ClientType.Individual : ClientType.LegalEntity;
 
             var client = new Client
             {
@@ -151,8 +132,8 @@ namespace SecurityCompanyWPF
             _viewModel.AddClient(client);
 
             AddClientPanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Visible;
 
-            // Очищаем поля
             ClientName.Text = "";
             ClientAddress.Text = "";
             ClientContactPerson.Text = "";
@@ -160,13 +141,15 @@ namespace SecurityCompanyWPF
             ClientPhone.Text = "";
             ClientEmail.Text = "";
             ClientTypeComboBox.SelectedIndex = 0;
+
+            StatusText.Text = "Клиент добавлен";
         }
 
         private void CancelClientButton_Click(object sender, RoutedEventArgs e)
         {
             AddClientPanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Visible;
 
-            // Очищаем поля
             ClientName.Text = "";
             ClientAddress.Text = "";
             ClientContactPerson.Text = "";
@@ -176,25 +159,16 @@ namespace SecurityCompanyWPF
             ClientTypeComboBox.SelectedIndex = 0;
         }
 
-        // ========== РАСПИСАНИЕ ==========
-
         private void AddScheduleButton_Click(object sender, RoutedEventArgs e)
         {
-            // Скрываем другие панели
+            AddSchedulePanel.Visibility = Visibility.Visible;
             AddEmployeePanel.Visibility = Visibility.Collapsed;
             AddClientPanel.Visibility = Visibility.Collapsed;
             AddEventPanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Collapsed;
 
-            // Обновляем список сотрудников в ComboBox
             ScheduleEmployeeComboBox.ItemsSource = _viewModel.Employees;
             ScheduleReplacementEmployeeComboBox.ItemsSource = _viewModel.Employees;
-
-            // Показываем панель расписания
-            AddSchedulePanel.Visibility = Visibility.Visible;
-
-            // Устанавливаем фокус
-            if (ScheduleEmployeeComboBox.Items.Count > 0)
-                ScheduleEmployeeComboBox.SelectedIndex = 0;
         }
 
         private void SaveScheduleButton_Click(object sender, RoutedEventArgs e)
@@ -233,21 +207,23 @@ namespace SecurityCompanyWPF
             _viewModel.AddDutySchedule(schedule);
 
             AddSchedulePanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Visible;
 
-            // Очищаем поля
             ScheduleEmployeeComboBox.SelectedIndex = -1;
             ScheduleReplacementEmployeeComboBox.SelectedIndex = -1;
             ScheduleDatePicker.SelectedDate = DateTime.Today;
             ScheduleStartTime.Text = "08:00";
             ScheduleEndTime.Text = "20:00";
             ScheduleReason.Text = "";
+
+            StatusText.Text = "Расписание добавлено";
         }
 
         private void CancelScheduleButton_Click(object sender, RoutedEventArgs e)
         {
             AddSchedulePanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Visible;
 
-            // Очищаем поля
             ScheduleEmployeeComboBox.SelectedIndex = -1;
             ScheduleReplacementEmployeeComboBox.SelectedIndex = -1;
             ScheduleDatePicker.SelectedDate = DateTime.Today;
@@ -256,21 +232,13 @@ namespace SecurityCompanyWPF
             ScheduleReason.Text = "";
         }
 
-        // ========== СОБЫТИЯ ==========
-
         private void AddEventButton_Click(object sender, RoutedEventArgs e)
         {
-            // Скрываем другие панели
+            AddEventPanel.Visibility = Visibility.Visible;
             AddEmployeePanel.Visibility = Visibility.Collapsed;
             AddClientPanel.Visibility = Visibility.Collapsed;
             AddSchedulePanel.Visibility = Visibility.Collapsed;
-
-            // Показываем панель события
-            AddEventPanel.Visibility = Visibility.Visible;
-
-            // Устанавливаем фокус
-            EventNameTextBox.Focus();
-            EventNameTextBox.SelectAll();
+            MainTabControl.Visibility = Visibility.Collapsed;
         }
 
         private void SaveEventButton_Click(object sender, RoutedEventArgs e)
@@ -324,8 +292,8 @@ namespace SecurityCompanyWPF
             _viewModel.AddEvent(newEvent);
 
             AddEventPanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Visible;
 
-            // Очищаем поля
             EventNameTextBox.Text = "Корпоративное мероприятие";
             EventDatePicker.SelectedDate = DateTime.Today;
             EventStartTime.Text = "18:00";
@@ -333,13 +301,15 @@ namespace SecurityCompanyWPF
             EventAddress.Text = "Москва, ул. Тверская, 10";
             EventParticipants.Text = "100";
             EventGuardsCount.Text = "2";
+
+            StatusText.Text = "Событие добавлено";
         }
 
         private void CancelEventButton_Click(object sender, RoutedEventArgs e)
         {
             AddEventPanel.Visibility = Visibility.Collapsed;
+            MainTabControl.Visibility = Visibility.Visible;
 
-            // Очищаем поля
             EventNameTextBox.Text = "Корпоративное мероприятие";
             EventDatePicker.SelectedDate = DateTime.Today;
             EventStartTime.Text = "18:00";
@@ -349,11 +319,48 @@ namespace SecurityCompanyWPF
             EventGuardsCount.Text = "2";
         }
 
-        // ========== ОБЩИЕ ФУНКЦИИ ==========
+        private void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedTab = MainTabControl.SelectedItem as TabItem;
+            if (selectedTab == null) return;
 
-        private void SaveDataButton_Click(object sender, RoutedEventArgs e)
+            switch (selectedTab.Header.ToString())
+            {
+                case "Сотрудники":
+                    if (_viewModel.SelectedEmployee != null)
+                    {
+                        _viewModel.RemoveEmployee(_viewModel.SelectedEmployee);
+                        StatusText.Text = "Сотрудник удален";
+                    }
+                    break;
+                case "Клиенты":
+                    if (_viewModel.SelectedClient != null)
+                    {
+                        _viewModel.RemoveClient(_viewModel.SelectedClient);
+                        StatusText.Text = "Клиент удален";
+                    }
+                    break;
+                case "Расписание":
+                    if (_viewModel.SelectedDutySchedule != null)
+                    {
+                        _viewModel.RemoveDutySchedule(_viewModel.SelectedDutySchedule);
+                        StatusText.Text = "Расписание удалено";
+                    }
+                    break;
+                case "События":
+                    if (_viewModel.SelectedEvent != null)
+                    {
+                        _viewModel.RemoveEvent(_viewModel.SelectedEvent);
+                        StatusText.Text = "Событие удалено";
+                    }
+                    break;
+            }
+        }
+
+        private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.SaveData();
+            StatusText.Text = "Данные сохранены";
         }
     }
 }
